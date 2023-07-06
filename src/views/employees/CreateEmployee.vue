@@ -1,138 +1,213 @@
 <template>
-    <div class="container mt-5">
+<div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
                 <div class="card border-0 rounded shadow">
                     <div class="card-body">
-                        <h4>TAMBAH POST</h4>
+                        <h4 class="m-4">Form Input Data Karyawan</h4>
                         <hr>
-                        <form @submit.prevent="store">
-                            <div class="form-group">
-                                <label for="name" class="font-weight-bold">NAME</label>
-                                <input type="text" class="form-control" v-model="employee.name" placeholder="Masukkan Nama Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.name" class="mt-2 alert alert-danger">
-                                    {{ validation.name[0] }}
+                        <form @submit.prevent="submitForm">
+                            <div style="margin-left: 4rem;">
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="name">Nama</label>
+                                    <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="employee.name" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="code">Code</label>
+                                    <input class="form-control" style="width: 70% !important" type="text" id="code" v-model="employee.code" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="phone">Phone</label>
+                                    <input class="form-control" style="width: 70% !important" type="text" id="phone" v-model="employee.phone" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="email">Email</label>
+                                    <input class="form-control" style="width: 70% !important" type="email" id="email" v-model="employee.email" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="birthdate">Tanggal Lahir</label>
+                                    <input class="form-control" style="width: 70% !important" type="date" id="birthdate" v-model="employee.birthdate" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="division">Divisi</label>
+                                    <select class="form-control" style="width: 70% !important" id="division" v-model="employee.division_id" required>
+                                        <option value="">Pilih Divisi</option>
+                                        <option v-for="division in divisions" :value="division.id" :key="division.id">{{ division.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="position">Posisi</label>
+                                    <select class="form-control" style="width: 70% !important" id="position" v-model="employee.position_id" required>
+                                        <option value="">Pilih Posisi</option>
+                                        <option v-for="position in positions" :value="position.id" :key="position.id">{{ position.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="image">Gambar</label>
+                                    <div class="dropzone form-control" style="width: 70%;" @dragover="handleDragOver" @drop="handleDrop">
+                                        <input type="file" id="image" class="file-input" @change="handleImageChange" accept="image/*">
+                                        <label for="image" :class="{'browse-button': true, 'has-file': image}">
+                                            {{ image ? 'File Dipilih' : 'Jelajah' }}
+                                        </label>
+                                        <div v-if="image" class="file-name">
+                                            {{ image.name }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="code" class="font-weight-bold">KODE</label>
-                                <input type="text" class="form-control" v-model="employee.code" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.code" class="mt-2 alert alert-danger">
-                                    {{ validation.code[0] }}
-                                </div>
+                            <hr>
+                            <div class="d-flex align-items-center justify-content-start m-4">
+                                <button type="submit" class="btn btn-md btn-success">SIMPAN</button>
+                                <router-link :to="{name: 'employees.index'}" class="btn btn-md btn-warning mx-4">
+                                    KEMBALI
+                                </router-link>
                             </div>
-                            <div class="form-group">
-                                <label for="phone" class="font-weight-bold">NOMOR TELEPON</label>
-                                <input type="text" class="form-control" v-model="employee.phone" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.phone" class="mt-2 alert alert-danger">
-                                    {{ validation.phone[0] }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="email" class="font-weight-bold">EMAIL</label>
-                                <input type="text" class="form-control" v-model="employee.email" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.email" class="mt-2 alert alert-danger">
-                                    {{ validation.email[0] }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="birthdate" class="font-weight-bold">TANGGAL LAHIR</label>
-                                <input type="text" class="form-control" v-model="employee.birthdate" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.birthdate" class="mt-2 alert alert-danger">
-                                    {{ validation.birthdate[0] }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="division" class="font-weight-bold">DIVISION</label>
-                                <input type="text" class="form-control" v-model="employee.division" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.division" class="mt-2 alert alert-danger">
-                                    {{ validation.division[0] }}
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="position" class="font-weight-bold">POSITION</label>
-                                <input type="text" class="form-control" v-model="employee.position" placeholder="Masukkan Kode Karyawan">
-                                <!-- validation -->
-                                <div v-if="validation.position" class="mt-2 alert alert-danger">
-                                    {{ validation.position[0] }}
-                                </div>
-                            </div>
-                            <button type="submit" class="btn btn-primary">SIMPAN</button>
-                        </form>                        
-
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
+  
 <script>
-import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import axios from 'axios'
+import axios from 'axios';
 
 export default {
-    setup() {
-        const employee = reactive({
-            name: '',
-            code: '',
-            birthdate: '',
-            phone: '',
-            email: '',
-            division_id: '',
-            position_id: '',
-        })
-        
-        const validation = ref([])
-        const router = useRouter()
-        
-        function store() {
-            let name        = employee.name
-            let code        = employee.code
-            let birthdate   = employee.birthdate
-            let phone       = employee.phone
-            let email       = employee.email
-            let division    = employee.division_id
-            let position    = employee.position_id
-
-            axios.post('http://localhost:8000/api/employee/create', {
-                name        : name,
-                code        : code,
-                birthdate   : birthdate,
-                phone       : phone,
-                email       : email,
-                division_id : division,
-                position_id : position,
-            }).then(() => {
-                console.log(employee)
-                router.push({
-                    name: 'employees.index'
-                })
-            }).catch(error => {
-                console.log(error)
-                validation.value = error.response.data
-            })
-        }
-
+    data() {
         return {
-            employee,
-            validation,
-            router,
-            store
+            employee: {
+                name: '',
+                code: '',
+                phone: '',
+                email: '',
+                birthdate: '',
+                division_id: '',
+                position_id: ''
+            },
+            divisions: [],
+            positions: [],
+            image: null,
+            imagePreview: null
+        };
+    },
+    mounted() {
+        this.fetchDivisions();
+        this.fetchPositions();
+    },
+    methods: {
+        fetchDivisions() {
+            axios.get('http://127.0.0.1:8000/api/divisions')
+                .then(response => {
+                    this.divisions = response.data.original.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+        fetchPositions() {
+            axios.get('http://127.0.0.1:8000/api/positions')
+                .then(response => {
+                    this.positions = response.data.original.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+        handleImageChange(event) {
+            this.image = event.target.files[0];
+            this.previewImage();
+        },
+        handleDragOver(event) {
+            event.preventDefault();
+        },
+        handleDrop(event) {
+            event.preventDefault();
+            this.image = event.dataTransfer.files[0];
+            this.previewImage();
+        },
+        previewImage() {
+            if (this.image) {
+                const reader = new FileReader();
+                reader.readAsDataURL(this.image);
+                reader.onload = () => {
+                this.imagePreview = reader.result;
+                };
+            }
+        },
+        submitForm() {
+            const formData = new FormData();
+            formData.append('image', this.image);
+            formData.append('name', this.employee.name);
+            formData.append('code', this.employee.code);
+            formData.append('phone', this.employee.phone);
+            formData.append('email', this.employee.email);
+            formData.append('birthdate', this.employee.birthdate);
+            formData.append('division_id', this.employee.division_id);
+            formData.append('position_id', this.employee.position_id);
+            
+            axios.post('http://127.0.0.1:8000/api/employee/create', formData)
+                .then(response => {
+                    console.log(response.data);
+                    this.employee = {
+                        name: '',
+                        code: '',
+                        phone: '',
+                        email: '',
+                        birthdate: '',
+                        division_id: '',
+                        position_id: ''
+                    };
+                    this.image = null;
+                    this.imagePreview = null;
+
+                    this.$router.push({ name: 'employees.index' });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     }
-}
-</script>
+};
+</script>  
 
 <style>
-    body{
-        background: lightgray;
-    }
+.form-group {
+  margin-bottom: 20px;
+}
+
+.dropzone {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 200px;
+  height: 50px;
+  border: 2px dashed #ccc;
+  cursor: pointer;
+}
+
+.file-input {
+  display: none;
+}
+
+.browse-button {
+    background-color: #5cb85c;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.has-file {
+    background-color: #ccc;
+}
+
+.file-name {
+  margin-left: 10px;
+}
+
+label{
+    font-size: large;
+    font-weight: 600;
+}
 </style>
