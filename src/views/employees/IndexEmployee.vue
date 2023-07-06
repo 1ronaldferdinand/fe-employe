@@ -58,34 +58,34 @@ import { onMounted, ref } from 'vue'
 import { mdiPencil, mdiEye, mdiDelete } from '@mdi/js'
 
 export default {
-  components: {
-    SvgIcon
-  },
-  setup() {
-    let employees = ref([])
-    
-    onMounted(() => {
-      axios.get('http://localhost:8000/api/employees')
-        .then(response => {
-          console.log(response.data.original.data)
-          employees.value = response.data.original.data
+    components: {
+        SvgIcon
+    },
+    setup() {
+        let employees = ref([])
+        
+        onMounted(() => {
+        axios.get('http://localhost:8000/api/employees')
+            .then(response => {
+              console.log(response.data.original.data)
+                employees.value = response.data.original.data
+            })
+            .catch(error => {
+                console.log(error.response.data)
+            })
         })
-        .catch(error => {
-          console.log(error.response.data)
-        })
-    })
 
-    return {
-      employees
+        return {
+            employees
+        }
+    },
+    data() {
+        return {
+            mdi_eye: mdiEye,
+            mdi_pencil: mdiPencil,
+            mdi_delete: mdiDelete,
+        }
     }
-  },
-  data() {
-    return {
-      mdi_eye: mdiEye,
-      mdi_pencil: mdiPencil,
-      mdi_delete: mdiDelete,
-    }
-  }
 }
 </script>
 

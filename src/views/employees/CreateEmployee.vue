@@ -49,8 +49,8 @@
                                         <label for="image" :class="{'browse-button': true, 'has-file': image}">
                                             {{ image ? 'File Dipilih' : 'Jelajah' }}
                                         </label>
-                                        <div v-if="image" class="file-name">
-                                            {{ image.name }}
+                                        <div v-if="image" class="file-preview">
+                                            <img :src="imagePreview" alt="Preview Image" class="preview-image">
                                         </div>
                                     </div>
                                 </div>
@@ -180,8 +180,9 @@ export default {
   position: relative;
   display: flex;
   align-items: center;
-  width: 200px;
-  height: 50px;
+  justify-content: space-between;
+  width: 100%;
+  height: fit-content;
   border: 2px dashed #ccc;
   cursor: pointer;
 }
@@ -209,5 +210,11 @@ export default {
 label{
     font-size: large;
     font-weight: 600;
+}
+
+.preview-image {
+    margin: 1rem 2rem 1rem 0;
+    width: auto;
+    height: 200px;
 }
 </style>
