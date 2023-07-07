@@ -32,7 +32,7 @@ export default {
   }
 
   main{
-    padding: 18px 0; 
+    padding: 1rem 0 4rem 0; 
     height: 100vh; 
     width: 100%;
     margin-left: 14rem;
