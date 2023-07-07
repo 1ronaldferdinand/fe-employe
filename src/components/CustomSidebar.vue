@@ -46,6 +46,9 @@
 <style scoped>
     .sidebar {
         width: 200px;
+        position: absolute;
+        z-index: 9999;
+        height: 100%;
         background-color: #FFF;
         padding: 0 !important;
         margin: 0 !important;

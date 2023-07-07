@@ -3,7 +3,7 @@
     <CustomNavbar />
     <div class="custom-container">
       <CustomSidebar />
-      <main style="padding: 8px 0; height: 100%; width: 100%;">
+      <main>
         <router-view />
       </main>
     </div>
@@ -27,8 +27,15 @@ export default {
   .custom-container {
     display: flex;
     width: 100% !important;
-    height: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
+  }
+
+  main{
+    padding: 18px 0; 
+    height: 100vh; 
+    width: 100%;
+    margin-left: 14rem;
+    overflow-y: scroll;
   }
 </style>

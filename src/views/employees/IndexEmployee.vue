@@ -84,10 +84,10 @@
 
 <script>
 import axios from 'axios'
+import CustomPagination from '../../components/CustomPagination.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
 import { onMounted, ref } from 'vue'
 import { mdiPencil, mdiEye, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/js'
-import CustomPagination from '../../components/CustomPagination.vue';
 
 export default {
     components: {
@@ -118,6 +118,7 @@ export default {
                     const message   = response.data.original.message
                     const res       = {'code': code, 'message': message}
                     console.log(res)
+                    window.location.reload();
                 }).catch(error => {
                     console.log(error.response.data);
                 })
