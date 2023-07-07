@@ -37,7 +37,7 @@
                                         <router-link :to="{name: 'employees.edit', params:{id: employee.id }}" class="mx-2">
                                             <svg-icon type="mdi" class="icon" :path="mdi_pencil"></svg-icon>
                                         </router-link>
-                                        <button class="plain">
+                                        <button class="plain" @click.prevent="deleteEmployee(employee.id)">
                                             <svg-icon type="mdi" class="icon" :path="mdi_delete"></svg-icon>
                                         </button>
                                     </td>
@@ -65,18 +65,27 @@ export default {
         let employees = ref([])
         
         onMounted(() => {
-        axios.get('http://localhost:8000/api/employees')
-            .then(response => {
-              console.log(response.data.original.data)
-                employees.value = response.data.original.data
-            })
-            .catch(error => {
-                console.log(error.response.data)
-            })
+            axios.get('http://localhost:8000/api/employees')
+                .then(response => {
+                console.log(response.data.original.data)
+                    employees.value = response.data.original.data
+                })
+                .catch(error => {
+                    console.log(error.response.data)
+                })
         })
 
+        function deleteEmployee(id) {
+            axios.post(`http://localhost:8000/api/employee/delete/${id}`)
+                .then(() => {
+                }).catch(error => {
+                    console.log(error.response.data);
+                })
+        }
+            
         return {
-            employees
+            employees,
+            deleteEmployee
         }
     },
     data() {
