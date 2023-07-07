@@ -12,7 +12,7 @@
                                 <input v-model="searchQuery" placeholder="Cari posisi">
                             </div>
                             <router-link :to="{name: 'positions.create'}" class="btn btn-md btn-success">
-                                TAMBAH DIVISI
+                                TAMBAH POSISI
                             </router-link>
                         </div>
 
