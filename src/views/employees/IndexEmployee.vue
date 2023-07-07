@@ -39,6 +39,7 @@
                                     <th scope="col" class="text-center">DIVISION</th>
                                     <th scope="col" class="text-center">PHONE</th>
                                     <th scope="col" class="text-center">EMAIL</th>
+                                    <th scope="col" class="text-center">STATUS</th>
                                     <th scope="col" class="text-center">OPTIONS</th>
                                 </tr>
                             </thead>
@@ -46,10 +47,14 @@
                                 <tr v-for="employee in paginatedData" :key="employee.id">
                                     <td>{{ employee.name }}</td>
                                     <td class="text-center">{{ employee.code }}</td>
-                                    <td>{{ employee.position.name }}</td>
-                                    <td>{{ employee.division.name }}</td>
-                                    <td>{{ employee.phone }}</td>
-                                    <td>{{ employee.email }}</td>
+                                    <td>{{ truncateText(employee.position.name, 15) }}</td>
+                                    <td>{{ truncateText(employee.division.name, 15) }}</td>
+                                    <td>{{ truncateText(employee.phone, 15) }}</td>
+                                    <td>{{ truncateText(employee.email, 15) }}</td>
+                                    <td class="text-center">
+                                        <span v-if="employee.status == 1">Aktif</span>
+                                        <span v-else>Tidak Aktif</span>
+                                    </td>
                                     <td class="text-center">
                                         <router-link :to="{name: 'employees.detail', params:{id: employee.id }}">
                                             <svg-icon type="mdi" class="icon" :path="mdi_eye"></svg-icon>
@@ -200,6 +205,12 @@ export default {
                     console.error(error);
                 });
         },
+        truncateText(text, maxLength) {
+            if (text.length > maxLength) {
+                return text.slice(0, maxLength) + '...';
+            }
+            return text;
+        }
     }
 }
 </script>

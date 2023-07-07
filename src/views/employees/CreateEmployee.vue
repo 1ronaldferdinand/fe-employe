@@ -20,8 +20,8 @@
                                     <input class="form-control" style="width: 70% !important" type="text" id="code" v-model="employee.code" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="position"><strong style="color: red;">*</strong> Jenis Kelamin</label>
-                                    <select class="form-control" style="width: 70% !important" id="position" v-model="employee.gender" required>
+                                    <label class="col-2" for="gender"><strong style="color: red;">*</strong> Jenis Kelamin</label>
+                                    <select class="form-control" style="width: 70% !important" id="gender" v-model="employee.gender" required>
                                         <option :value="'L'">Laki-laki</option>
                                         <option :value="'P'">Perempuan</option>
                                     </select>
@@ -50,6 +50,13 @@
                                     <select class="form-control" style="width: 70% !important" id="position" v-model="employee.position_id" required>
                                         <option value="">Pilih Posisi</option>
                                         <option v-for="position in positions" :value="position.id" :key="position.id">{{ position.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="status">Status</label>
+                                    <select class="form-control" style="width: 70% !important" id="status" v-model="employee.status">
+                                        <option value="1">Aktif</option>
+                                        <option value="2">Tidak Aktif</option>
                                     </select>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
@@ -94,6 +101,7 @@ export default {
                 phone: '',
                 email: '',
                 birthdate: '',
+                status: '1',
                 division_id: '',
                 position_id: ''
             },
@@ -157,6 +165,7 @@ export default {
             formData.append('phone', this.employee.phone);
             formData.append('email', this.employee.email);
             formData.append('birthdate', this.employee.birthdate);
+            formData.append('status', this.employee.status);
             formData.append('division_id', this.employee.division_id);
             formData.append('position_id', this.employee.position_id);
             
@@ -170,6 +179,7 @@ export default {
                             phone: '',
                             email: '',
                             birthdate: '',
+                            status: '1',
                             division_id: '',
                             position_id: ''
                         };
@@ -190,22 +200,22 @@ export default {
 
 <style>
 .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .dropzone {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: fit-content;
-  border: 2px dashed #ccc;
-  cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: fit-content;
+    border: 2px dashed #ccc;
+    cursor: pointer;
 }
 
 .file-input {
-  display: none;
+    display: none;
 }
 
 .browse-button {
@@ -221,7 +231,7 @@ export default {
 }
 
 .file-name {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 label{

@@ -8,6 +8,9 @@
                         <hr>
                         <form @submit.prevent="submitForm">
                             <div style="margin-left: 4rem;">
+                                <div v-if="errors">
+                                    <strong style="color: red;">{{ errors }}</strong>
+                                </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="name"><strong style="color: red;">*</strong> Nama</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="employee.name" required>
@@ -17,8 +20,8 @@
                                     <input class="form-control" style="width: 70% !important" type="text" id="code" v-model="employee.code" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="position"><strong style="color: red;">*</strong> Jenis Kelamin</label>
-                                    <select class="form-control" style="width: 70% !important" id="position" v-model="employee.gender" required>
+                                    <label class="col-2" for="gender"><strong style="color: red;">*</strong> Jenis Kelamin</label>
+                                    <select class="form-control" style="width: 70% !important" id="gender" v-model="employee.gender" required>
                                         <option value="L">Laki-laki</option>
                                         <option value="P">Perempuan</option>
                                     </select>
@@ -47,6 +50,13 @@
                                     <select class="form-control" style="width: 70% !important" id="position" v-model="employee.position_id" required>
                                         <option value="">Pilih Posisi</option>
                                         <option v-for="position in positions" :value="position.id" :key="position.id">{{ position.name }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="status">Status</label>
+                                    <select class="form-control" style="width: 70% !important" id="status" v-model="employee.status">
+                                        <option value="1">Aktif</option>
+                                        <option value="2">Tidak Aktif</option>
                                     </select>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
@@ -93,11 +103,13 @@ export default {
                 phone: '',
                 email: '',
                 birthdate: '',
+                status: '1',
                 division_id: '',
                 position_id: ''
             },
             divisions: [],
             positions: [],
+            errors: null,
             image: null,
             imagePreview: null
         };
@@ -169,26 +181,30 @@ export default {
             formData.append('phone', this.employee.phone);
             formData.append('email', this.employee.email);
             formData.append('birthdate', this.employee.birthdate);
+            formData.append('status', this.employee.status);
             formData.append('division_id', this.employee.division_id);
             formData.append('position_id', this.employee.position_id);
-            console.log(this.image)
+            console.log(this.employee);
             axios.post(`http://127.0.0.1:8000/api/employee/update/${this.id}`, formData)
                 .then(response => {
-                    console.log(response.data);
-                    this.employee = {
-                        name: '',
-                        code: '',
-                        gender: '',
-                        phone: '',
-                        email: '',
-                        birthdate: '',
-                        division_id: '',
-                        position_id: ''
-                    };
-                    this.image = null;
-                    this.imagePreview = null;
-
-                    this.$router.push({ name: 'employees.index' });
+                    if(response.data.original.code == '200'){
+                        this.employee = {
+                            name: '',
+                            code: '',
+                            gender: '',
+                            phone: '',
+                            email: '',
+                            birthdate: '',
+                            status: '1',
+                            division_id: '',
+                            position_id: ''
+                        };
+                        this.image = null;
+                        this.imagePreview = null;
+                        this.$router.push({ name: 'employees.index' });
+                    } else {
+                        this.errors = response.data.original.message;
+                    }
                 })
                 .catch(error => {
                     console.error(error);
@@ -200,43 +216,43 @@ export default {
 
 <style>
 .form-group {
-  margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .dropzone {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: fit-content;
-  border: 2px dashed #ccc;
-  cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: fit-content;
+    border: 2px dashed #ccc;
+    cursor: pointer;
 }
 
 .file-input {
-  display: none;
+    display: none;
 }
 
 .browse-button {
-  background-color: #5cb85c;
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+    background-color: #5cb85c;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .has-file {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
 .file-name {
-  margin-left: 10px;
+    margin-left: 10px;
 }
 
 label {
-  font-size: large;
-  font-weight: 600;
+    font-size: large;
+    font-weight: 600;
 }
 
 .preview-image {
