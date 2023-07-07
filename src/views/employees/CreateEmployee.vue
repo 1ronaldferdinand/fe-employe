@@ -8,6 +8,9 @@
                         <hr>
                         <form @submit.prevent="submitForm">
                             <div style="margin-left: 4rem;">
+                                <div v-if="errors">
+                                    <strong style="color: red;">{{ errors }}</strong>
+                                </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="name"><strong style="color: red;">*</strong> Nama</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="employee.name" required>
@@ -15,6 +18,13 @@
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="code"><strong style="color: red;">*</strong> Kode Karyawan</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="code" v-model="employee.code" required>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="position"><strong style="color: red;">*</strong> Jenis Kelamin</label>
+                                    <select class="form-control" style="width: 70% !important" id="position" v-model="employee.gender" required>
+                                        <option :value="'L'">Laki-laki</option>
+                                        <option :value="'P'">Perempuan</option>
+                                    </select>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="phone"><strong style="color: red;">*</strong> Nomor Telepon</label>
@@ -80,6 +90,7 @@ export default {
             employee: {
                 name: '',
                 code: '',
+                gender: '',
                 phone: '',
                 email: '',
                 birthdate: '',
@@ -88,6 +99,7 @@ export default {
             },
             divisions: [],
             positions: [],
+            errors: null,
             image: null,
             imagePreview: null
         };
@@ -132,7 +144,7 @@ export default {
                 const reader = new FileReader();
                 reader.readAsDataURL(this.image);
                 reader.onload = () => {
-                this.imagePreview = reader.result;
+                    this.imagePreview = reader.result;
                 };
             }
         },
@@ -141,6 +153,7 @@ export default {
             formData.append('image', this.image);
             formData.append('name', this.employee.name);
             formData.append('code', this.employee.code);
+            formData.append('gender', this.employee.gender);
             formData.append('phone', this.employee.phone);
             formData.append('email', this.employee.email);
             formData.append('birthdate', this.employee.birthdate);
@@ -149,20 +162,23 @@ export default {
             
             axios.post('http://127.0.0.1:8000/api/employee/create', formData)
                 .then(response => {
-                    console.log(response.data);
-                    this.employee = {
-                        name: '',
-                        code: '',
-                        phone: '',
-                        email: '',
-                        birthdate: '',
-                        division_id: '',
-                        position_id: ''
-                    };
-                    this.image = null;
-                    this.imagePreview = null;
-
-                    this.$router.push({ name: 'employees.index' });
+                    if(response.data.original.code == '200'){
+                        this.employee = {
+                            name: '',
+                            code: '',
+                            gender: '',
+                            phone: '',
+                            email: '',
+                            birthdate: '',
+                            division_id: '',
+                            position_id: ''
+                        };
+                        this.image = null;
+                        this.imagePreview = null;
+                        this.$router.push({ name: 'employees.index' });
+                    } else {
+                        this.errors = response.data.original.message;
+                    }
                 })
                 .catch(error => {
                     console.error(error);

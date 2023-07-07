@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container my-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="card border-0 rounded shadow">
@@ -9,34 +9,41 @@
                         <form @submit.prevent="submitForm">
                             <div style="margin-left: 4rem;">
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="name">Nama</label>
+                                    <label class="col-2" for="name"><strong style="color: red;">*</strong> Nama</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="employee.name" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="code">Code</label>
+                                    <label class="col-2" for="code"><strong style="color: red;">*</strong> Kode Karyawan</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="code" v-model="employee.code" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="phone">Nomor Telepon</label>
+                                    <label class="col-2" for="position"><strong style="color: red;">*</strong> Jenis Kelamin</label>
+                                    <select class="form-control" style="width: 70% !important" id="position" v-model="employee.gender" required>
+                                        <option value="L">Laki-laki</option>
+                                        <option value="P">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div class="form-group d-flex align-items-center justify-content-start my-4">
+                                    <label class="col-2" for="phone"><strong style="color: red;">*</strong> Nomor Telepon</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="phone" v-model="employee.phone" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="email">Email</label>
+                                    <label class="col-2" for="email"><strong style="color: red;">*</strong> Email</label>
                                     <input class="form-control" style="width: 70% !important" type="email" id="email" v-model="employee.email" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="birthdate">Tanggal Lahir</label>
+                                    <label class="col-2" for="birthdate"><strong style="color: red;">*</strong> Tanggal Lahir</label>
                                     <input class="form-control" style="width: 70% !important" type="date" id="birthdate" v-model="employee.birthdate" required>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="division">Divisi</label>
+                                    <label class="col-2" for="division"><strong style="color: red;">*</strong> Divisi</label>
                                     <select class="form-control" style="width: 70% !important" id="division" v-model="employee.division_id" required>
                                         <option value="">Pilih Divisi</option>
                                         <option v-for="division in divisions" :value="division.id" :key="division.id">{{ division.name }}</option>
                                     </select>
                                 </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                    <label class="col-2" for="position">Posisi</label>
+                                    <label class="col-2" for="position"><strong style="color: red;">*</strong> Posisi</label>
                                     <select class="form-control" style="width: 70% !important" id="position" v-model="employee.position_id" required>
                                         <option value="">Pilih Posisi</option>
                                         <option v-for="position in positions" :value="position.id" :key="position.id">{{ position.name }}</option>
@@ -55,9 +62,10 @@
                                         </div>
                                     </div>
                                 </div>
+                                <span style="font-size: small;">Kolom dengan tanda <strong style="color: red; font-size: medium;">*</strong> berarti<strong> Wajib diisi.</strong></span>
                             </div>
                             <hr>
-                            <div class="d-flex align-items-center justify-content-start m-4">
+                            <div class="d-flex align-items-center justify-content-end m-4">
                                 <button type="submit" class="btn btn-md btn-success">SIMPAN</button>
                                 <router-link :to="{ name: 'employees.index' }" class="btn btn-md btn-warning mx-4">
                                     KEMBALI
@@ -81,6 +89,7 @@ export default {
             employee: {
                 name: '',
                 code: '',
+                gender: '',
                 phone: '',
                 email: '',
                 birthdate: '',
@@ -156,6 +165,7 @@ export default {
             formData.append('image', this.image);
             formData.append('name', this.employee.name);
             formData.append('code', this.employee.code);
+            formData.append('gender', this.employee.gender);
             formData.append('phone', this.employee.phone);
             formData.append('email', this.employee.email);
             formData.append('birthdate', this.employee.birthdate);
@@ -168,6 +178,7 @@ export default {
                     this.employee = {
                         name: '',
                         code: '',
+                        gender: '',
                         phone: '',
                         email: '',
                         birthdate: '',
