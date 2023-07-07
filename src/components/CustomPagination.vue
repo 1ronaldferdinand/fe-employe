@@ -47,6 +47,7 @@
   
     .pagination li {
         display: inline;
+        border-color: #198754;
     }
 
     .pagination li a:hover {
@@ -58,12 +59,12 @@
     }
 
     .pagination .number li a {
-        margin: 0 0.5rem;
+        margin: 0 0.2rem;
     }
   
     .pagination li a {
         background-color: #fff;
-        border: 1px solid #ddd;
+        border: 1px solid gray;
         border-radius: 8px;
         color: black;
         float: left;

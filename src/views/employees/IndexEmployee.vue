@@ -1,5 +1,5 @@
 <template>
-    <div class="container mt-5">
+    <div class="container my-2">
         <div class="row">
             <div class="col-md-12">
                 <div class="card border-0 rounded shadow">
@@ -42,7 +42,7 @@
                                     <th scope="col" class="text-center">OPTIONS</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody v-if="paginatedData.length != 0">
                                 <tr v-for="employee in paginatedData" :key="employee.id">
                                     <td>{{ employee.name }}</td>
                                     <td class="text-center">{{ employee.code }}</td>
@@ -63,6 +63,16 @@
                                     </td>
                                 </tr>
                             </tbody>
+                            <tbody v-else>
+                                <tr>
+                                    <td :colspan="7">
+                                        <span class="d-flex flex-column justify-content-center align-items-center">
+                                            <svg-icon type="mdi" class="icon" :path="mdi_question"></svg-icon>
+                                            Data is empty
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                         <CustomPagination :current-page="currentPage" :total-pages="totalPages" @page-changed="handlePageChanged" />
                     </div>
@@ -76,7 +86,7 @@
 import axios from 'axios'
 import SvgIcon from '@jamescoyle/vue-icon'
 import { onMounted, ref } from 'vue'
-import { mdiPencil, mdiEye, mdiDelete, mdiMagnify } from '@mdi/js'
+import { mdiPencil, mdiEye, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/js'
 import CustomPagination from '../../components/CustomPagination.vue';
 
 export default {
@@ -124,6 +134,7 @@ export default {
             mdi_pencil     : mdiPencil,
             mdi_delete     : mdiDelete,
             mdi_search     : mdiMagnify,
+            mdi_question   : mdiFileQuestion,
             perPage        : 10,
             currentPage    : 1,
             searchQuery    : '',
