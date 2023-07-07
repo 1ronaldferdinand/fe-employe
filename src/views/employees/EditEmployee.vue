@@ -8,9 +8,6 @@
                         <hr>
                         <form @submit.prevent="submitForm">
                             <div style="margin-left: 4rem;">
-                                <div v-if="errors">
-                                    <strong style="color: red;">{{ errors }}</strong>
-                                </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="name"><strong style="color: red;">*</strong> Nama</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="employee.name" required>
@@ -121,6 +118,18 @@ export default {
         this.fetchPositions();
     },
     methods: {
+        showErrorToast(message) {
+            this.$toast.error(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        showSuccessToast(message) {
+            this.$toast.success(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
         fetchEmployee() {
             axios.get(`http://127.0.0.1:8000/api/employee/detail/${this.id}`)
                 .then(response => {
@@ -201,9 +210,11 @@ export default {
                         };
                         this.image = null;
                         this.imagePreview = null;
+                        this.showSuccessToast(response.data.original.message)
                         this.$router.push({ name: 'employees.index' });
                     } else {
                         this.errors = response.data.original.message;
+                        this.showErrorToast(this.errors);
                     }
                 })
                 .catch(error => {

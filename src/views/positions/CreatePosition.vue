@@ -8,9 +8,6 @@
                         <hr>
                         <form @submit.prevent="submitForm">
                             <div style="margin-left: 4rem;">
-                                <div v-if="errors">
-                                    <strong style="color: red;">{{ errors }}</strong>
-                                </div>
                                 <div class="form-group d-flex align-items-center justify-content-start my-4">
                                     <label class="col-2" for="name"><strong style="color: red;">*</strong> Nama</label>
                                     <input class="form-control" style="width: 70% !important" type="text" id="name" v-model="position.name" required>
@@ -58,6 +55,18 @@ export default {
         };
     },
     methods: {
+        showErrorToast(message) {
+            this.$toast.error(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        showSuccessToast(message) {
+            this.$toast.success(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
         submitForm() {
             const formData = new FormData();
             formData.append('name', this.position.name);
@@ -72,9 +81,11 @@ export default {
                             description: '',
                             status: '',
                         };
+                        this.showSuccessToast(response.data.original.message)
                         this.$router.push({ name: 'positions.index' });
                     } else {
                         this.errors = response.data.original.message;
+                        this.showErrorToast(this.errors)
                     }
                 })
                 .catch(error => {

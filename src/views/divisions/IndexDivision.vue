@@ -76,36 +76,23 @@ export default {
     setup() {
         let divisions = ref([])
         
-        onMounted(() => {
+        const fetchData = () => {
             axios.get('http://localhost:8000/api/divisions')
                 .then(response => {
                     divisions.value = response.data.original.data
-                    const code      = response.data.original.code
-                    const message   = response.data.original.message
-                    const res       = {'code': code, 'message': message}
-                    console.log(res)
                 })
                 .catch(error => {
-                    console.log(error.response.data)
-                })
-        })
-
-        function deleteDivision(id) {
-            axios.post(`http://localhost:8000/api/division/delete/${id}`)
-                .then(response => {
-                    const code      = response.data.original.code
-                    const message   = response.data.original.message
-                    const res       = {'code': code, 'message': message}
-                    console.log(res)
-                    window.location.reload();
-                }).catch(error => {
-                    console.log(error.response.data);
+                    console.log(error)
                 })
         }
-            
+
+        onMounted(() => {
+            fetchData()
+            setInterval(fetchData, 1000)
+        })
+
         return {
-            divisions,
-            deleteDivision
+            divisions
         }
     },
     data() {
@@ -145,6 +132,27 @@ export default {
     methods: {
         handlePageChanged(currentPage) {
             this.currentPage = currentPage;
+        },
+        showErrorToast(message) {
+            this.$toast.error(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        showSuccessToast(message) {
+            this.$toast.success(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        deleteDivision(id) {
+            axios.post(`http://localhost:8000/api/division/delete/${id}`)
+                .then(response => {
+                    const message   = response.data.original.message
+                    this.showSuccessToast(message)
+                }).catch(error => {
+                    console.log(error);
+                })
         },
     }
 }

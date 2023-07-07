@@ -76,6 +76,7 @@
                 employee: {},
                 division_name: '',
                 position_name: '',
+                router: useRouter(),
             };
         },
         mounted() {
@@ -90,23 +91,28 @@
                     console.error(error);
                 });
         },
-        setup() {
-            const router = useRouter();
-            function deleteEmployee(id) {
+        methods: {
+            showErrorToast(message) {
+                this.$toast.error(message, {
+                    duration: 5000,
+                    position: 'top-right'
+                })
+            },
+            showSuccessToast(message) {
+                this.$toast.success(message, {
+                    duration: 5000,
+                    position: 'top-right'
+                })
+            },
+            deleteEmployee(id) {
                 axios.post(`http://localhost:8000/api/employee/delete/${id}`)
                     .then(response => {
-                        const code      = response.data.original.code
                         const message   = response.data.original.message
-                        const res       = {'code': code, 'message': message}
-                        console.log(res)
-                        router.push({ name: 'employees.index' });
+                        this.showSuccessToast(message)
+                        this.router.push({ name: 'employees.index' });
                     }).catch(error => {
-                        console.log(error.response.data);
+                        console.log(error);
                     })
-            }
-
-            return {
-                deleteEmployee
             }
         }
     };

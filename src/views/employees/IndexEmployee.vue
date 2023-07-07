@@ -70,7 +70,7 @@
                             </tbody>
                             <tbody v-else>
                                 <tr>
-                                    <td :colspan="7">
+                                    <td :colspan="8">
                                         <span class="d-flex flex-column justify-content-center align-items-center">
                                             <svg-icon type="mdi" class="icon" :path="mdi_question"></svg-icon>
                                             Data is empty
@@ -102,36 +102,23 @@ export default {
     setup() {
         let employees = ref([])
         
-        onMounted(() => {
+        const fetchData = () => {
             axios.get('http://localhost:8000/api/employees')
                 .then(response => {
                     employees.value = response.data.original.data
-                    const code      = response.data.original.code
-                    const message   = response.data.original.message
-                    const res       = {'code': code, 'message': message}
-                    console.log(res)
                 })
                 .catch(error => {
-                    console.log(error.response.data)
-                })
-        })
-
-        function deleteEmployee(id) {
-            axios.post(`http://localhost:8000/api/employee/delete/${id}`)
-                .then(response => {
-                    const code      = response.data.original.code
-                    const message   = response.data.original.message
-                    const res       = {'code': code, 'message': message}
-                    console.log(res)
-                    window.location.reload();
-                }).catch(error => {
-                    console.log(error.response.data);
+                    console.log(error)
                 })
         }
+
+        onMounted(() => {
+            fetchData()
+            setInterval(fetchData, 1000)
+        })
             
         return {
-            employees,
-            deleteEmployee
+            employees
         }
     },
     data() {
@@ -184,6 +171,27 @@ export default {
         this.fetchPositions();    
     },
     methods: {
+        showErrorToast(message) {
+            this.$toast.error(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        showSuccessToast(message) {
+            this.$toast.success(message, {
+                duration: 5000,
+                position: 'top-right'
+            })
+        },
+        deleteEmployee(id) {
+            axios.post(`http://localhost:8000/api/employee/delete/${id}`)
+                .then(response => {
+                    const message   = response.data.original.message
+                    this.showSuccessToast(message);
+                }).catch(error => {
+                    console.log(error)
+                })
+        },
         handlePageChanged(currentPage) {
             this.currentPage = currentPage;
         },
