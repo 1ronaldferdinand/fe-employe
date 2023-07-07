@@ -34,29 +34,29 @@
                         <hr>
                         <div style="margin-left: 4rem;">
                             <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                <label class="col-3" for="phone">Nomor Telepon</label>
-                                <span class="col-1">:</span>
-                                <span class="col-8">{{ employee.phone }}</span>
+                                <label class="col-2" for="phone">Nomor Telepon</label>
+                                <span class="col-1 d-flex justify-content-center">:</span>
+                                <span class="col-9">{{ employee.phone }}</span>
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                <label class="col-3" for="email">Email</label>
-                                <span class="col-1">:</span>
-                                <span class="col-8">{{ employee.email }}</span>
+                                <label class="col-2" for="email">Email</label>
+                                <span class="col-1 d-flex justify-content-center">:</span>
+                                <span class="col-9">{{ employee.email }}</span>
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                <label class="col-3" for="birthdate">Tanggal Lahir</label>
-                                <span class="col-1">:</span>
-                                <span class="col-8">{{ employee.birthdate }}</span>
+                                <label class="col-2" for="birthdate">Tanggal Lahir</label>
+                                <span class="col-1 d-flex justify-content-center">:</span>
+                                <span class="col-9">{{ employee.birthdate }}</span>
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                <label class="col-3" for="division">Divisi</label>
-                                <span class="col-1">:</span>
-                                <span class="col-8">{{ division_name }}</span>
+                                <label class="col-2" for="division">Divisi</label>
+                                <span class="col-1 d-flex justify-content-center">:</span>
+                                <span class="col-9">{{ division_name }}</span>
                             </div>
                             <div class="form-group d-flex align-items-center justify-content-start my-4">
-                                <label class="col-3" for="position">Posisi</label>
-                                <span class="col-1">:</span>
-                                <span class="col-8">{{ position_name }}</span>
+                                <label class="col-2" for="position">Posisi</label>
+                                <span class="col-1 d-flex justify-content-center">:</span>
+                                <span class="col-9">{{ position_name }}</span>
                             </div>
                         </div>
                     </div>

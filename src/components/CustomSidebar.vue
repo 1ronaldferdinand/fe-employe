@@ -1,24 +1,24 @@
 <!-- Sidebar.vue -->
 <template>
-    <div class="sidebar">
+    <div class="sidebar shadow">
         <ul>
-            <li>
-                <a href="/">
+            <li @click="move('/')">
+                <div>
                     <svg-icon type="mdi" class="icon" :path="mdi_employee"></svg-icon>
                     Karyawan
-                </a>
+                </div>
             </li>
-            <li>
-                <a href="/divisions">
+            <li @click="move('/divisions')">
+                <div>
                     <svg-icon type="mdi" class="icon" :path="mdi_division"></svg-icon>
                     Divisi
-                </a>
+                </div>
             </li>
-            <li>
-                <a href="/positions">
+            <li @click="move('/positions')">
+                <div>
                     <svg-icon type="mdi" class="icon" :path="mdi_position"></svg-icon>
                     Posisi
-                </a>
+                </div>
             </li>
         </ul>
     </div>
@@ -37,6 +37,11 @@
                 mdi_employee : mdiAccountGroup,
                 mdi_division : mdiAccountMultiple,
                 mdi_position : mdiAccount,
+            }
+        },
+        methods: {
+            move(url){
+                window.location.href = url;
             }
         },
         name: 'CustomSidebar'
@@ -67,13 +72,14 @@
         border-radius: 32px;
         padding: 8px 16px;
         margin: 1rem 1rem;
+        cursor: pointer;
     }  
 
     .sidebar li:hover{
         background-color: #21B26F;
     }
 
-    .sidebar li:hover a{
+    .sidebar li:hover div{
         color: white;
     }
 
@@ -85,7 +91,7 @@
         margin-right: 10px;
     }
 
-    .sidebar a {
+    .sidebar div {
         display: flex;
         align-items: center;
         text-decoration: none;
