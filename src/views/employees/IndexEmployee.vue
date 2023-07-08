@@ -62,7 +62,7 @@
                                         <router-link :to="{name: 'employees.edit', params:{id: employee.id }}" class="mx-2">
                                             <svg-icon type="mdi" class="icon" :path="mdi_pencil"></svg-icon>
                                         </router-link>
-                                        <button class="plain" @click.prevent="deleteEmployee(employee.id)">
+                                        <button class="plain" @click="showConfirmationPopup(employee.id)">
                                             <svg-icon type="mdi" class="icon" :path="mdi_delete"></svg-icon>
                                         </button>
                                     </td>
@@ -80,6 +80,7 @@
                             </tbody>
                         </table>
                         <CustomPagination :current-page="currentPage" :total-pages="totalPages" @page-changed="handlePageChanged" />
+                        <DeletePopup :show="showPopup" :idtoDelete="idtoDelete" :url="url" :title="title" :subtitle="subtitle" @confirm="hidePopup" @cancel="hidePopup" />
                     </div>
                 </div>
             </div>
@@ -90,6 +91,7 @@
 <script>
 import axios from 'axios'
 import CustomPagination from '../../components/CustomPagination.vue';
+import DeletePopup from '../../components/DeletePopup.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
 import { onMounted, ref } from 'vue'
 import { mdiPencil, mdiEye, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/js'
@@ -97,7 +99,8 @@ import { mdiPencil, mdiEye, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/
 export default {
     components: {
         SvgIcon,
-        CustomPagination
+        CustomPagination,
+        DeletePopup
     },
     setup() {
         let employees = ref([])
@@ -123,6 +126,10 @@ export default {
     },
     data() {
         return {
+            url            : 'employee',
+            urls           : 'employees',
+            idtoDelete     : '',
+            showPopup      : false,
             mdi_eye        : mdiEye,
             mdi_pencil     : mdiPencil,
             mdi_delete     : mdiDelete,
@@ -183,14 +190,15 @@ export default {
                 position: 'top-right'
             })
         },
-        deleteEmployee(id) {
-            axios.post(`http://localhost:8000/api/employee/delete/${id}`)
-                .then(response => {
-                    const message   = response.data.original.message
-                    this.showSuccessToast(message);
-                }).catch(error => {
-                    console.log(error)
-                })
+        showConfirmationPopup(employeeId) {
+            this.title      = "Hapus Karyawan";
+            this.subtitle   = "Apakah anda yakin untuk menghapus data ?";
+            this.idtoDelete = employeeId;
+            this.showPopup  = true;
+        },
+        hidePopup() {
+            this.showPopup = false;
+            this.idtoDelete = null;
         },
         handlePageChanged(currentPage) {
             this.currentPage = currentPage;

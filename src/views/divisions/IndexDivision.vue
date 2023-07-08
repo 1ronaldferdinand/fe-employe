@@ -36,7 +36,7 @@
                                         <router-link :to="{name: 'divisions.edit', params:{id: division.id }}" class="mx-2">
                                             <svg-icon type="mdi" class="icon" :path="mdi_pencil"></svg-icon>
                                         </router-link>
-                                        <button class="plain" @click.prevent="deleteDivision(division.id)">
+                                        <button class="plain" @click.prevent="showConfirmationPopup(division.id)">
                                             <svg-icon type="mdi" class="icon" :path="mdi_delete"></svg-icon>
                                         </button>
                                     </td>
@@ -54,6 +54,7 @@
                             </tbody>
                         </table>
                         <CustomPagination :current-page="currentPage" :total-pages="totalPages" @page-changed="handlePageChanged" />
+                        <DeletePopup :show="showPopup" :idtoDelete="idtoDelete" :url="url" :title="title" :subtitle="subtitle" @confirm="hidePopup" @cancel="hidePopup" />
                     </div>
                 </div>
             </div>
@@ -63,6 +64,7 @@
 
 <script>
 import axios from 'axios'
+import DeletePopup from '../../components/DeletePopup.vue';
 import CustomPagination from '../../components/CustomPagination.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
 import { onMounted, ref } from 'vue'
@@ -71,7 +73,8 @@ import { mdiPencil, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/js'
 export default {
     components: {
         SvgIcon,
-        CustomPagination
+        CustomPagination,
+        DeletePopup
     },
     setup() {
         let divisions = ref([])
@@ -97,6 +100,9 @@ export default {
     },
     data() {
         return {
+            url            : 'division',
+            urls           : 'divisions',
+            idtoDelete     : '',
             mdi_pencil     : mdiPencil,
             mdi_delete     : mdiDelete,
             mdi_search     : mdiMagnify,
@@ -145,14 +151,15 @@ export default {
                 position: 'top-right'
             })
         },
-        deleteDivision(id) {
-            axios.post(`http://localhost:8000/api/division/delete/${id}`)
-                .then(response => {
-                    const message   = response.data.original.message
-                    this.showSuccessToast(message)
-                }).catch(error => {
-                    console.log(error);
-                })
+        showConfirmationPopup(id) {
+            this.title      = "Hapus Divisi";
+            this.subtitle   = "Apakah anda yakin untuk menghapus data ?";
+            this.idtoDelete = id;
+            this.showPopup  = true;
+        },
+        hidePopup() {
+            this.showPopup = false;
+            this.idtoDelete = null;
         },
     }
 }

@@ -10,7 +10,7 @@
                                 <router-link :to="{ name: 'employees.edit' }" class="btn btn-md btn-warning mx-1">
                                     EDIT
                                 </router-link>
-                                <button class="btn btn-md btn-danger mx-1" @click.prevent="deleteEmployee(employee.id)">
+                                <button class="btn btn-md btn-danger mx-1" @click.prevent="showConfirmationPopup(employee.id)">
                                     DELETE
                                 </button>
                                 <router-link :to="{ name: 'employees.index' }" class="btn btn-md btn-success mx-1">
@@ -59,6 +59,7 @@
                                 <span class="col-9">{{ position_name }}</span>
                             </div>
                         </div>
+                        <DeletePopup :show="showPopup" :idtoDelete="idtoDelete" :url="url" :title="title" :subtitle="subtitle" @confirm="deleteData" @cancel="hidePopup" />
                     </div>
                 </div>
             </div>
@@ -69,14 +70,21 @@
 <script>
     import axios from 'axios';
     import { useRouter } from 'vue-router';
+    import DeletePopup from '../../components/DeletePopup.vue';
     
     export default {    
+        components: {
+            DeletePopup
+        },
         data() {
             return {
-                employee: {},
-                division_name: '',
-                position_name: '',
-                router: useRouter(),
+                url           : 'employee',
+                urls          : 'employees',
+                idtoDelete    : '',
+                employee      : {},
+                division_name : '',
+                position_name : '',
+                router        : useRouter(),
             };
         },
         mounted() {
@@ -104,15 +112,20 @@
                     position: 'top-right'
                 })
             },
-            deleteEmployee(id) {
-                axios.post(`http://localhost:8000/api/employee/delete/${id}`)
-                    .then(response => {
-                        const message   = response.data.original.message
-                        this.showSuccessToast(message)
-                        this.router.push({ name: 'employees.index' });
-                    }).catch(error => {
-                        console.log(error);
-                    })
+            showConfirmationPopup(employeeId) {
+                this.title      = "Hapus Karyawan";
+                this.subtitle   = "Apakah anda yakin untuk menghapus data ?";
+                this.idtoDelete = employeeId;
+                this.showPopup  = true;
+            },
+            hidePopup() {
+                this.showPopup = false;
+                this.idtoDelete = null;
+            },
+            deleteData() {
+                this.router.push({ name: 'employees.index' });
+                this.showPopup = false;
+                this.idtoDelete = null;
             }
         }
     };
