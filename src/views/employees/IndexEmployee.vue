@@ -29,7 +29,7 @@
                                 TAMBAH KARYAWAN
                             </router-link>
                         </div>
-
+                        
                         <table class="table table-striped table-bordered mt-4">
                             <thead class="thead-dark">
                                 <tr>
@@ -43,12 +43,12 @@
                                     <th scope="col" class="text-center">OPTIONS</th>
                                 </tr>
                             </thead>
-                            <tbody v-if="paginatedData.length != 0">
-                                <tr v-for="employee in paginatedData" :key="employee.id">
+                            <tbody v-if="employees.length != 0">
+                                <tr v-for="employee in employees" :key="employee.id">
                                     <td>{{ employee.name }}</td>
                                     <td class="text-center">{{ employee.code }}</td>
-                                    <td>{{ truncateText(employee.position.name, 15) }}</td>
-                                    <td>{{ truncateText(employee.division.name, 15) }}</td>
+                                    <td>{{ truncateText(employee.position ? employee.position.name : employee.position_name, 15) }}</td>
+                                    <td>{{ truncateText(employee.division ? employee.division.name : employee.division_name, 15) }}</td>
                                     <td>{{ truncateText(employee.phone, 15) }}</td>
                                     <td>{{ truncateText(employee.email, 15) }}</td>
                                     <td class="text-center">
@@ -80,7 +80,7 @@
                             </tbody>
                         </table>
                         <CustomPagination :current-page="currentPage" :total-pages="totalPages" @page-changed="handlePageChanged" />
-                        <DeletePopup :show="showPopup" :idtoDelete="idtoDelete" :url="url" :title="title" :subtitle="subtitle" @confirm="hidePopup" @cancel="hidePopup" />
+                        <DeletePopup :show="showPopup" :idtoDelete="idtoDelete" :url="url" :title="title" :subtitle="subtitle" @confirm="hidePopup" @cancel="hidePopup" @deletingEmployee="fetchData()"/>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,6 @@ import axios from 'axios'
 import CustomPagination from '../../components/CustomPagination.vue';
 import DeletePopup from '../../components/DeletePopup.vue';
 import SvgIcon from '@jamescoyle/vue-icon'
-import { onMounted, ref } from 'vue'
 import { mdiPencil, mdiEye, mdiDelete, mdiMagnify, mdiFileQuestion } from '@mdi/js'
 
 export default {
@@ -102,82 +101,82 @@ export default {
         CustomPagination,
         DeletePopup
     },
-    setup() {
-        let employees = ref([])
-        
-        const fetchData = () => {
-            axios.get('http://localhost:8000/api/employees')
-                .then(response => {
-                    employees.value = response.data.original.data
-                })
-                .catch(error => {
-                    console.log(error)
-                })
-        }
-
-        onMounted(() => {
-            fetchData()
-            setInterval(fetchData, 1000)
-        })
-            
-        return {
-            employees
-        }
-    },
     data() {
         return {
             url            : 'employee',
             urls           : 'employees',
-            idtoDelete     : '',
+            idtoDelete     : 0,
             showPopup      : false,
             mdi_eye        : mdiEye,
             mdi_pencil     : mdiPencil,
             mdi_delete     : mdiDelete,
             mdi_search     : mdiMagnify,
             mdi_question   : mdiFileQuestion,
-            perPage        : 10,
-            currentPage    : 1,
             searchQuery    : '',
             searchDivision : '',
             searchPosition : '',
+            title          : '',
+            subtitle       : '',
+            currentPage    : 1,
+            perPage        : 10,
+            totalPages     : 1,
             divisions      : [],
-            positions      : []
+            positions      : [],
+            employees      : [],
+            loading        : true
         }
     },
-    computed: {
-        totalPages() {
-            return Math.ceil(this.employees.length / this.perPage);
-        },
-        paginatedData() {
-            const start = (this.currentPage - 1) * this.perPage;
-            const end   = start + this.perPage;
-            return this.filteredData.slice(start, end);
-        },
-        filteredData() {
-            let filtered = this.employees
-            if(this.employees.length != 0){
-                filtered = this.employees.filter(employee => {
-                    const employeeName     = (employee.name ?? '').toLowerCase();
-                    const divisionName     = (employee.division.name ?? '').toLowerCase();
-                    const positionName     = (employee.position.name ?? '').toLowerCase();
-                    const query            = this.searchQuery.toLowerCase();
-                    const selectedDivision = this.searchDivision ? this.searchDivision.toLowerCase() : '';
-                    const selectedPosition = this.searchPosition ? this.searchPosition.toLowerCase() : '';
-                    return (
-                        (employeeName.includes(query) || divisionName.includes(query) || positionName.includes(query)) &&
-                        (selectedDivision === '' || divisionName === selectedDivision) &&
-                        (selectedPosition === '' || positionName === selectedPosition)
-                    );
-                });
-            }
-            return filtered;
-        },
-    },
     mounted() {
+        this.fetchData();
         this.fetchDivisions();
         this.fetchPositions();    
     },
+    watch: {
+        searchQuery(newValue, oldValue) {
+            if(newValue != oldValue){
+                this.fetchData();
+            }
+        },
+        searchDivision(newValue, oldValue) {
+            if(newValue != oldValue){
+                this.fetchData();
+            }
+        },
+        searchPosition(newValue, oldValue) {
+            if(newValue != oldValue){
+                this.fetchData();
+            }
+        },
+        currentPage(newValue, oldValue) {
+            if(newValue != oldValue){
+                this.fetchData();
+            }
+        },
+        perPage(newValue, oldValue) {
+            if(newValue != oldValue){
+                this.fetchData();
+            }
+        },
+    },
     methods: {
+        fetchData(){
+            axios.get('http://localhost:8000/api/employees', {
+                params: {
+                    searchQuery: this.searchQuery,
+                    searchDivision: this.searchDivision,
+                    searchPosition: this.searchPosition,
+                    page: this.currentPage,
+                    perPage: this.perPage
+                }
+            })
+            .then(response => {
+                this.employees = response.data.original.data.data // Assuming data is inside 'data'
+                this.totalPages = response.data.original.data.last_page // Adjust based on actual response
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        },  
         showErrorToast(message) {
             this.$toast.error(message, {
                 duration: 5000,

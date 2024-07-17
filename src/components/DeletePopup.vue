@@ -124,7 +124,11 @@ export default {
         delete(url, id) {
             axios.post(`http://localhost:8000/api/${url}/delete/${id}`)
                 .then(response => {
-                    const message   = response.data.original.message
+                    if(this.url == 'employee'){
+                        this.$emit('deletingEmployee');
+                    }
+
+                    const message   = response.data.original.message;
                     this.showSuccessToast(message);
                 }).catch(error => {
                     console.log(error)
